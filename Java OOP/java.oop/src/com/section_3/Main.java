@@ -1,8 +1,10 @@
-package com.company;
+package com.section_3;
 
 public class Main {
 
+    /* Inheritance */
+
     public static void main(String[] args) {
-	// write your code here
+
     }
 }
