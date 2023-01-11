@@ -6,18 +6,18 @@ import Add from "../screens/Add";
 const Stack = createNativeStackNavigator();
 
 const MyStack = () => {
-    return(
+    return (
         <Stack.Navigator>
-            <Stack.Screen name="Home" component={Home}/>
-            <Stack.Screen name="Add" component={Add}/>
+            <Stack.Screen name="Home" component={Home} />
+            <Stack.Screen name="Add" component={Add} options={{ presentation: 'modal' }} />
         </Stack.Navigator>
     )
 }
 
 export default Navigation = () => {
-    return(
+    return (
         <NavigationContainer>
-            <MyStack/>
+            <MyStack />
         </NavigationContainer>
     )
 }
