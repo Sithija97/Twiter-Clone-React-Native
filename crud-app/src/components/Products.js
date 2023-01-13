@@ -1,15 +1,45 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { database } from '../config/firebase'
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import { AntDesign } from '@expo/vector-icons'
 
 const Product = ({ id, emoji, name, price, isSold }) => {
+    const onDelete = () => {
+        const docRef = doc(database, 'products', id);
+        deleteDoc(docRef);
+    }
+
+    const onEdit = () => {
+        const docRef = doc(database, 'products', id);
+        updateDoc(docRef, {
+            isSold: true,
+        });
+    }
     return (
-        <View style={StyleSheet.productContainer}>
-            <Text style={styles.emoji}>{emoji}</Text>
-            <Text style={styles.name}>{name}</Text>
-            <Text style={styles.price}>{price}</Text>
+        <View>
+            <View style={styles.productContainer}>
+                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                    <Text style={styles.emoji}>{emoji}</Text>
+                    <AntDesign onPress={onDelete} name="delete" size={24} color="black" />
+                </View>
+                <Text style={styles.name}>{name}</Text>
+                <Text style={styles.price}>${price}</Text>
+                {isSold ? (
+                    <TouchableOpacity 
+                    style={[styles.button, {backgroundColor: 'gray'}]}>
+                    <Text style={styles.buttonText}>Sold</Text>
+                </TouchableOpacity>
+                )
+                : (
+                    <TouchableOpacity 
+                    onPress={onEdit}
+                    style={styles.button}>
+                    <Text style={styles.buttonText}>Purchase</Text>
+                </TouchableOpacity>
+                )}
+                
+            </View>
         </View>
     )
 }
@@ -39,7 +69,7 @@ const styles = StyleSheet.create({
         marginVertical: 6,
         borderRadius: 8,
         alignItems: 'center'
-    },
+   },
     buttonText: {
         fontSize: 24,
         fontWeight: 'bold',
