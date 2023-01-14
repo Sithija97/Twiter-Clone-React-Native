@@ -1,10 +1,14 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 import { database } from '../config/firebase'
 import { deleteDoc, doc, updateDoc } from 'firebase/firestore'
 import { AntDesign } from '@expo/vector-icons'
 
 const Product = ({ id, emoji, name, price, isSold }) => {
+
+    const navigation = useNavigation()
+
     const onDelete = () => {
         const docRef = doc(database, 'products', id);
         deleteDoc(docRef);
@@ -16,29 +20,38 @@ const Product = ({ id, emoji, name, price, isSold }) => {
             isSold: true,
         });
     }
+
+    const onUpdate = () => {
+        // const docRef = doc(database, 'products', id);
+        navigation.navigate('Update',{id:id})
+    }
+
     return (
         <View>
             <View style={styles.productContainer}>
-                <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.emoji}>{emoji}</Text>
-                    <AntDesign onPress={onDelete} name="delete" size={24} color="black" />
+                    <View style={{ flexDirection: 'row' }}>
+                        <AntDesign onPress={onUpdate} name="edit" size={24} color="black" />
+                        <AntDesign onPress={onDelete} name="delete" size={24} color="black" />
+                    </View>
                 </View>
                 <Text style={styles.name}>{name}</Text>
                 <Text style={styles.price}>${price}</Text>
                 {isSold ? (
-                    <TouchableOpacity 
-                    style={[styles.button, {backgroundColor: 'gray'}]}>
-                    <Text style={styles.buttonText}>Sold</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: 'gray' }]}>
+                        <Text style={styles.buttonText}>Sold</Text>
+                    </TouchableOpacity>
                 )
-                : (
-                    <TouchableOpacity 
-                    onPress={onEdit}
-                    style={styles.button}>
-                    <Text style={styles.buttonText}>Purchase</Text>
-                </TouchableOpacity>
-                )}
-                
+                    : (
+                        <TouchableOpacity
+                            onPress={onEdit}
+                            style={styles.button}>
+                            <Text style={styles.buttonText}>Purchase</Text>
+                        </TouchableOpacity>
+                    )}
+
             </View>
         </View>
     )
@@ -69,7 +82,7 @@ const styles = StyleSheet.create({
         marginVertical: 6,
         borderRadius: 8,
         alignItems: 'center'
-   },
+    },
     buttonText: {
         fontSize: 24,
         fontWeight: 'bold',
