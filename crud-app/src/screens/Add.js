@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native'
 
 const Add = () => {
   const initialState = {
-    emoji: '📷',
+    emoji: '🍉',
     name: '',
     price: 0,
     isSold: false,
