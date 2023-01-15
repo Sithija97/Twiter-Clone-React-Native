@@ -21,9 +21,9 @@ const Product = ({ id, emoji, name, price, isSold }) => {
         });
     }
 
-    const onUpdate = () => {
+    const gotoUpdate = (props) => {
         // const docRef = doc(database, 'products', id);
-        navigation.navigate('Update',{id:id})
+        navigation.navigate('Update', { product: props })
     }
 
     return (
@@ -32,7 +32,7 @@ const Product = ({ id, emoji, name, price, isSold }) => {
                 <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
                     <Text style={styles.emoji}>{emoji}</Text>
                     <View style={{ flexDirection: 'row' }}>
-                        <AntDesign onPress={onUpdate} name="edit" size={24} color="black" />
+                        <AntDesign onPress={() => gotoUpdate({ id, emoji, name, price, isSold })} name="edit" size={24} color="black" />
                         <AntDesign onPress={onDelete} name="delete" size={24} color="black" />
                     </View>
                 </View>

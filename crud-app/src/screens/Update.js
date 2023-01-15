@@ -1,54 +1,82 @@
 import { View, Text, StyleSheet, TextInput, Button } from 'react-native'
-import React, { useState } from 'react'
-import EmojiPicker from 'rn-emoji-keyboard'
-import { doc } from 'firebase/firestore'
+import React, { useEffect, useState } from 'react'
+import EmojiPicker, { id } from 'rn-emoji-keyboard'
+import { doc, updateDoc } from 'firebase/firestore'
 import { database } from '../config/firebase'
-// import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from '@react-navigation/native'
 
-const Update = ({route}) => {
+const Update = ({ route }) => {
     const initialState = {
-        emoji: '📷',
+        id: null,
+        emoji: '',
         name: '',
         price: 0,
         isSold: false,
         createdAt: new Date(),
     }
-    const [newItem, setNewItem] = useState(initialState)
+    const [updatedItem, setUpdatedtem] = useState(initialState)
     const [isOpen, setIsOpen] = useState(false)
 
-    // const navigation = useNavigation()
-    const {id} = route.params;
-    const docRef = doc(database, 'products', id);
-    console.log(docRef);
+    const navigation = useNavigation()
+
+    useEffect(() => {
+        const { product } = route.params;
+        const { emoji, name, price, isSold, id } = product;
+        setUpdatedtem({
+            id: id,
+            emoji: emoji,
+            name: name,
+            price: price,
+            isSold: isSold,
+            createdAt: new Date(),
+        })
+    }, [])
+
 
     const handlePick = (emojiObject) => {
-        setNewItem({
-            ...newItem,
+        setUpdatedtem({
+            ...updatedItem,
             emoji: emojiObject.emoji
         })
+    }
+
+    const onUpdate = () => {
+        const { id, emoji, name, price, isSold } = updatedItem
+        const docRef = doc(database, 'products', id);
+
+        updateDoc(docRef, {
+            emoji: emoji,
+            name: name,
+            price: price,
+            isSold: isSold,
+            createdAt: new Date(),
+        });
+        navigation.goBack()
     }
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Update Product</Text>
-            <Text style={styles.emoji} onPress={() => setIsOpen(true)}>{newItem.emoji}</Text>
+            <Text value={updatedItem.emoji} style={styles.emoji} onPress={() => setIsOpen(true)}>{updatedItem.emoji}</Text>
             <EmojiPicker
                 onEmojiSelected={handlePick}
                 open={isOpen}
                 onClose={() => setIsOpen(false)}
             />
             <TextInput
-                onChangeText={(text) => setNewItem({ ...newItem, name: text })}
+                value={updatedItem.name}
+                onChangeText={(text) => setUpdatedtem({ ...updatedItem, name: text })}
                 placeholder='Product Name'
                 style={styles.inputContainer}
             />
             <TextInput
-                onChangeText={(text) => setNewItem({ ...newItem, price: text })}
+                value={updatedItem.price}
+                onChangeText={(text) => setUpdatedtem({ ...updatedItem, price: text })}
                 placeholder='$ Price'
                 style={styles.inputContainer}
                 keyboardType='number-pad'
             />
-            <Button title='Publish' />
+            <Button title='Publish' onPress={onUpdate} />
         </View>
     )
 }

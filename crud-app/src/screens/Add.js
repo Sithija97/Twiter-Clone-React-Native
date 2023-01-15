@@ -25,26 +25,28 @@ const Add = () => {
     })
   }
 
-  postRecord = async() => {
-    await addDoc(collection(database,'products'), newItem);
+  postRecord = async () => {
+    await addDoc(collection(database, 'products'), newItem);
     navigation.goBack()
   }
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Sell a New Product</Text>
-      <Text style={styles.emoji} onPress={() => setIsOpen(true)}>{newItem.emoji}</Text>
+      <Text value={newItem.name} style={styles.emoji} onPress={() => setIsOpen(true)}>{newItem.emoji}</Text>
       <EmojiPicker
         onEmojiSelected={handlePick}
         open={isOpen}
         onClose={() => setIsOpen(false)}
       />
       <TextInput
+        value={newItem.name}
         onChangeText={(text) => setNewItem({ ...newItem, name: text })}
         placeholder='Product Name'
         style={styles.inputContainer}
       />
       <TextInput
+        value={newItem.price}
         onChangeText={(text) => setNewItem({ ...newItem, price: text })}
         placeholder='$ Price'
         style={styles.inputContainer}
