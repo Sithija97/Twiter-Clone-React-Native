@@ -1,4 +1,6 @@
-{
+import 'dotenv/config'
+
+export default {
   "expo": {
     "name": "my-app",
     "slug": "my-app",
@@ -32,7 +34,13 @@
     },
     "extra": {
       "eas": {
-        "projectId": "d8c11e85-4f04-467b-a8f1-36e15ccadb76"
+        "projectId": "d8c11e85-4f04-467b-a8f1-36e15ccadb76",
+        firebaseApiKey: process.env.FIREBASE_API_KEY,
+        firebaseAuthDomain: process.env.FIREBASE_AUTH_DOMAIN,
+        firebaseProjectId: process.env.FIREBASE_PROJECT_ID,
+        firebaseStorageBucket: process.env.FIREBASE_STORAGE_BUCKET,
+        firebaseMessagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID,
+        firebaseAppId: process.env.FIREBASE_APP_ID
       }
     }
   }
