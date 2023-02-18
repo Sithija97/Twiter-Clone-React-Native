@@ -1,5 +1,5 @@
-import React from 'react';
-import { Input, Button } from 'react-native-elements';
+import React, { useState } from 'react';
+import { Input, Button, Icon } from 'react-native-elements';
 import { StyleSheet, Text, TextInput, View } from 'react-native';
 import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
 
@@ -12,6 +12,29 @@ export default SignIn = () => {
   }
   const [value, setValue] = useState(initialState)
   const auth = getAuth();
+
+  const handleChange = (key, value) => {
+    setValue(prevState => ({
+      ...prevState,
+      [key]: value
+    }));
+  }
+
+  const validate = (value) => {
+    if (!value.email || !value.password) {
+      return 'Email and password are mandatory.';
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email)) {
+      return 'Please enter a valid email address.';
+    }
+
+    if (value.password.length < 6) {
+      return 'Password must be at least 6 characters.';
+    }
+
+    return '';
+  }
 
   const signIn = async () => {
     if (!value.email || !value.password) {
@@ -32,6 +55,7 @@ export default SignIn = () => {
       })
     }
   }
+
   return (
     <View style={styles.container}>
       <Text>Signin screen!</Text>
@@ -39,27 +63,19 @@ export default SignIn = () => {
       {!!value.error && <View style={styles.error}><Text>{value.error}</Text></View>}
 
       <View style={styles.controls}>
-        <Input
+        <TextInput
           placeholder='Email'
           containerStyle={styles.control}
           value={value.email}
-          onChangeText={(text) => setValue({ ...value, email: text })}
-          leftIcon={<Icon
-            name='envelope'
-            size={16}
-          />}
+          onChangeText={(text) => handleChange('email', text)}
         />
 
-        <Input
+        <TextInput
           placeholder='Password'
           containerStyle={styles.control}
           value={value.password}
-          onChangeText={(text) => setValue({ ...value, password: text })}
+          onChangeText={(text) => handleChange('password', text)}
           secureTextEntry={true}
-          leftIcon={<Icon
-            name='key'
-            size={16}
-          />}
         />
 
         <Button title="Sign in" buttonStyle={styles.control} onPress={signIn} />

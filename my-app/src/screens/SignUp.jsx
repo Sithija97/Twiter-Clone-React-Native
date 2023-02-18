@@ -15,12 +15,33 @@ export default SignUp = ({ navigation }) => {
   const [value, setValue] = useState(initialState)
   const auth = getAuth();
 
-  const signUp = async () => {
+  const handleChange = (key, value) => {
+    setValue(prevState => ({
+      ...prevState,
+      [key]: value
+    }));
+  }
+
+  const validate = (value) => {
     if (!value.email || !value.password) {
-      setValue({
-        ...value,
-        error: 'Email and password are mandatory.'
-      });
+      return 'Email and password are mandatory.';
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email)) {
+      return 'Please enter a valid email address.';
+    }
+
+    if (value.password.length < 6) {
+      return 'Password must be at least 6 characters.';
+    }
+
+    return '';
+  }
+
+  const signUp = async () => {
+    const errorMessage = validate(value);
+    if (errorMessage !== '') {
+      setValue({ ...value, error: errorMessage });
       return
     }
 
@@ -37,18 +58,14 @@ export default SignUp = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <Text>SignUp screen!</Text>
-      {!!value.error && <View style={styles.error}><Text>{value.error}</Text></View>}
+      {value.error && <View style={styles.error}><Text>{value.error}</Text></View>}
       <View style={styles.controls}>
         <TextInput
           style={styles.input}
           placeholder='Email'
           containerStyle={styles.control}
           value={value.email}
-          onChangeText={(text) => setValue({ ...value, email: text })}
-          leftIcon={<Icon
-            name='envelope'
-            size={16}
-          />}
+          onChangeText={(text) => handleChange('email', text)}
         />
 
         <TextInput
@@ -56,12 +73,8 @@ export default SignUp = ({ navigation }) => {
           placeholder='Password'
           containerStyle={styles.control}
           value={value.password}
-          onChangeText={(text) => setValue({ ...value, password: text })}
+          onChangeText={(text) => handleChange('password', text)}
           secureTextEntry={true}
-          leftIcon={<Icon
-            name='key'
-            size={16}
-          />}
         />
 
         <Button title="Sign up" buttonStyle={styles.control} onPress={signUp} />
