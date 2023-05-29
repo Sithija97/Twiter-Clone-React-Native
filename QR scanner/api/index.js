@@ -8,14 +8,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", async (req, res) => {
-  res.status(200).json({
-    message: "TEST endpoint",
-  });
-});
-
-app.post("/testPost", async (req, res) => {
-  console.log("hitting endpoint");
+app.post("/postAttendence", async (req, res) => {
   console.log(req.body.data);
 });
 

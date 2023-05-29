@@ -39,7 +39,7 @@ export default function App() {
 
   const postQRDetails = async (data) => {
     console.log(`Data : ${data}`);
-    await axios.post("http://192.168.8.102:8000/testPost", { data });
+    await axios.post("http://192.168.8.102:8000/postAttendence", { data });
   };
 
   return (
