@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function App() {
   const [hasPermission, setHasPermission] = useState(false);
@@ -14,12 +15,18 @@ export default function App() {
 
   useEffect(() => {
     requestPermission();
+
+    return () => {
+      setHasPermission(false);
+      setScanData();
+    };
   }, []);
 
   if (!hasPermission) {
     return (
       <View style={styles.container}>
         <Text>Please grant permissions to app</Text>
+        <Button title="allow" onPress={() => requestPermission()} />
         <StatusBar style="auto" />
       </View>
     );
@@ -27,7 +34,12 @@ export default function App() {
 
   const handledBarCodeScanned = ({ type, data }) => {
     setScanData(data);
+    postQRDetails(data);
+  };
+
+  const postQRDetails = async (data) => {
     console.log(`Data : ${data}`);
+    await axios.post("http://192.168.8.102:8000/testPost", { data });
   };
 
   return (
@@ -40,6 +52,7 @@ export default function App() {
         <Button title="Scan Again ?" onPress={() => setScanData(undefined)} />
       )}
       <StatusBar style="auto" />
+      <Button title="X" onPress={() => setHasPermission(false)} />
     </View>
   );
 }
