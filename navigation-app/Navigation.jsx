@@ -11,14 +11,22 @@ import Feed from "./screens/tab-screens/Feed";
 import Settings from "./screens/tab-screens/Settings";
 import Notifications from "./screens/tab-screens/Notifications";
 import TweetDetailsScreen from "./screens/homeStack-screens/TweetDetailsScreen";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+import Payments from "./screens/drawer-screens/Payments";
 
 // Stack
 const HomeStack = createStackNavigator();
 
 function HomeStackGroup() {
   return (
-    <HomeStack.Navigator>
-      <HomeStack.Screen name="Feed" component={Feed} />
+    <HomeStack.Navigator
+      screenOptions={({ route }) => ({ headerTitleAlign: "center" })}
+    >
+      <HomeStack.Screen
+        name="TabGroup"
+        component={TabGroup}
+        options={{ headerShown: false }}
+      />
       <HomeStack.Screen
         name="TweetDetailsScreen"
         component={TweetDetailsScreen}
@@ -35,10 +43,10 @@ function TabGroup() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        // headerTitleAlign: "center",
+        headerTitleAlign: "center",
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          if (route.name === "HomeStackGroup") {
+          if (route.name === "Feed") {
             iconName = focused ? "home" : "home-outline";
           } else if (route.name === "Settings") {
             iconName = focused ? "settings" : "ios-settings-sharp";
@@ -51,14 +59,30 @@ function TabGroup() {
         tabBarInactiveTintColor: "gray",
       })}
     >
-      <Tab.Screen
+      {/* <Tab.Screen
         name="HomeStackGroup"
         component={HomeStackGroup}
         options={{ headerShown: false, tabBarLabel: "Feed" }}
-      />
+      /> */}
+      <Tab.Screen name="Feed" component={Feed} />
       <Tab.Screen name="Settings" component={Settings} />
       <Tab.Screen name="Notifications" component={Notifications} />
     </Tab.Navigator>
+  );
+}
+
+// Drawer
+const Drawer = createDrawerNavigator();
+
+function DrawerGroup() {
+  return (
+    <Drawer.Navigator screenOptions={{ headerShown: false }}>
+      <Drawer.Screen
+        name="HomeStackGroup"
+        component={HomeStackGroup}
+      ></Drawer.Screen>
+      <Drawer.Screen name="Payments" component={Payments}></Drawer.Screen>
+    </Drawer.Navigator>
   );
 }
 
@@ -66,7 +90,7 @@ export default function Navigation() {
   const theme = useColorScheme();
   return (
     <NavigationContainer theme={theme === "light" ? DarkTheme : DefaultTheme}>
-      <TabGroup />
+      <DrawerGroup />
     </NavigationContainer>
   );
 }
