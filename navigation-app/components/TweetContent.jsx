@@ -83,7 +83,7 @@ const TweetContent = ({ tweet }) => {
               numberOfLines={1}
               style={[
                 styles.header,
-                { color: theme === "dark" ? "#FFF" : "#000" },
+                // { color: theme === "dark" ? "#FFF" : "#000" },
               ]}
             >
               {tweet.author.name}
@@ -97,7 +97,7 @@ const TweetContent = ({ tweet }) => {
           <Text
             style={[
               styles.description,
-              { color: theme === "dark" ? "#FFF" : "#000" },
+              // { color: theme === "dark" ? "#FFF" : "#000" },
             ]}
           >
             {tweet.fullText}
