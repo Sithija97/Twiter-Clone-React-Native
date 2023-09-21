@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import { registerData, registerUser } from "../services/api-service";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -17,7 +18,14 @@ export const Register = ({ navigation }: any) => {
   const handleLogin = () => {
     navigation.navigate("Login");
   };
-  const handleRegister = () => {
+  const handleRegister = async ({ name, email, password }: registerData) => {
+    try {
+      const user = await registerUser({ name, email, password });
+      console.log(user);
+      // Handle successful registration (e.g., navigate to a success screen)
+    } catch (error) {
+      // Handle registration error (e.g., display an error message)
+    }
     navigation.navigate("Login");
   };
   return (
@@ -73,7 +81,7 @@ export const Register = ({ navigation }: any) => {
             <Button
               title="Register"
               disabled={!isValid}
-              onPress={handleRegister}
+              onPress={() => handleRegister(values)}
             />
           </>
         )}

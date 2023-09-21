@@ -1,5 +1,16 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
+import { Formik } from "formik";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object().shape({
+  email: Yup.string()
+    .email("Invalid email address")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+});
 
 export const Login = ({ navigation }: any) => {
   const handleRegister = () => {
@@ -11,15 +22,47 @@ export const Login = ({ navigation }: any) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      <>
-        <TextInput style={styles.input} placeholder="Username" />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry={true}
-        />
-        <Button title="Login" onPress={handleLogin} />
-      </>
+      <Formik
+        initialValues={{ name: "", email: "", password: "" }}
+        validationSchema={validationSchema}
+        onSubmit={handleLogin}
+      >
+        {({
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          errors,
+          touched,
+          isValid,
+        }) => (
+          <>
+            <TextInput
+              style={styles.input}
+              placeholder="email"
+              keyboardType="email-address"
+              onChangeText={handleChange("email")}
+              onBlur={handleBlur("email")}
+              value={values.email}
+            />
+            {touched.email && errors.email && (
+              <Text style={styles.errorText}>{errors.email}</Text>
+            )}
+            <TextInput
+              style={styles.input}
+              placeholder="Password"
+              secureTextEntry={true}
+              onChangeText={handleChange("password")}
+              onBlur={handleBlur("password")}
+              value={values.password}
+            />
+            {touched.password && errors.password && (
+              <Text style={styles.errorText}>{errors.password}</Text>
+            )}
+            <Button title="Login" disabled={!isValid} onPress={handleLogin} />
+          </>
+        )}
+      </Formik>
       <Text style={styles.registerText}>
         Don't have an account?{" "}
         <Text style={styles.registerLink} onPress={handleRegister}>
