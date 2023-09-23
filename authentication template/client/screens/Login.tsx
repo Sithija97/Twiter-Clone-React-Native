@@ -1,7 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
+import localStorage from "react-native-expo-localstorage";
+import { RootState, useAppDispatch, useAppSelector } from "../store/store";
+import { LoginData } from "../services/auth-service";
+import { login } from "../store/auth/authSlice";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -13,12 +17,23 @@ const validationSchema = Yup.object().shape({
 });
 
 export const Login = ({ navigation }: any) => {
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector((state: RootState) => state.auth);
   const handleRegister = () => {
     navigation.navigate("Register");
   };
-  const handleLogin = () => {
-    navigation.navigate("Home");
+  const handleLogin = async ({ email, password }: LoginData) => {
+    try {
+      const user = { email, password };
+      dispatch(login(user)).then(
+        (data) =>
+          data.meta.requestStatus === "fulfilled" && navigation.navigate("Home")
+      );
+    } catch (error) {
+      console.log("registration error :", error);
+    }
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
@@ -59,7 +74,11 @@ export const Login = ({ navigation }: any) => {
             {touched.password && errors.password && (
               <Text style={styles.errorText}>{errors.password}</Text>
             )}
-            <Button title="Login" disabled={!isValid} onPress={handleLogin} />
+            <Button
+              title="Login"
+              disabled={!isValid}
+              onPress={() => handleLogin(values)}
+            />
           </>
         )}
       </Formik>

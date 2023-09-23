@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import apiService, { registerData } from "../services/api-service";
-import { RootState, useAppSelector } from "../store/store";
+import { registerData } from "../services/auth-service";
+import { RootState, useAppDispatch, useAppSelector } from "../store/store";
+import localStorage from "react-native-expo-localstorage";
+import { register } from "../store/auth/authSlice";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -16,21 +18,26 @@ const validationSchema = Yup.object().shape({
 });
 
 export const Register = ({ navigation }: any) => {
-  const auth = useAppSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
   const handleLogin = () => {
     navigation.navigate("Login");
   };
   const handleRegister = async ({ name, email, password }: registerData) => {
     try {
-      const user = await apiService.registerUser({ name, email, password });
-      console.log(user);
-      // Handle successful registration (e.g., navigate to a success screen)
+      const user = {
+        name,
+        email,
+        password,
+      };
+      dispatch(register(user)).then(
+        (data) =>
+          data.meta.requestStatus === "fulfilled" &&
+          navigation.navigate("Login")
+      );
     } catch (error) {
-      // Handle registration error (e.g., display an error message)
+      console.log("registration error :", error);
     }
-    navigation.navigate("Login");
   };
-  console.log(auth);
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>

@@ -1,14 +1,17 @@
 import React from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
+import { RootState, useAppSelector } from "../store/store";
 
 export const Home = ({ navigation }: any) => {
+  const auth = useAppSelector((state: RootState) => state.auth);
+
   const handleLogout = () => {
     navigation.navigate("Login");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Welcome to the Home Screen</Text>
+      <Text style={styles.title}>{`Welcome ${auth.user?.name}`}</Text>
       <Button title="Logout" onPress={handleLogout} />
     </View>
   );
