@@ -17,7 +17,6 @@ export interface LoginData {
 // Register a new user
 const registerUser = async (userData: registerData) => {
   try {
-    // console.log("userData :", userData);
     const response = await axios.post(`${BASE_URL}/users`, userData);
 
     localStorage.setItem("user", JSON.stringify(response.data));

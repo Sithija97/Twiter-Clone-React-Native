@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import { registerData } from "../services/auth-service";
 import { RootState, useAppDispatch, useAppSelector } from "../store/store";
 import localStorage from "react-native-expo-localstorage";
-import { register } from "../store/auth/authSlice";
+import { register, reset } from "../store/auth/authSlice";
 
 const validationSchema = Yup.object().shape({
   name: Yup.string().required("Name is required"),
@@ -19,6 +19,14 @@ const validationSchema = Yup.object().shape({
 
 export const Register = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
+  const { user, isError, isSuccess, message } = useAppSelector(
+    (state: RootState) => state.auth
+  );
+
+  useEffect(() => {
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigation, dispatch]);
+
   const handleLogin = () => {
     navigation.navigate("Login");
   };
@@ -38,6 +46,7 @@ export const Register = ({ navigation }: any) => {
       console.log("registration error :", error);
     }
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
@@ -91,7 +100,9 @@ export const Register = ({ navigation }: any) => {
             <Button
               title="Register"
               disabled={!isValid}
-              onPress={() => handleRegister(values)}
+              onPress={() => {
+                handleRegister(values);
+              }}
             />
           </>
         )}

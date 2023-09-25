@@ -5,7 +5,7 @@ import * as Yup from "yup";
 import localStorage from "react-native-expo-localstorage";
 import { RootState, useAppDispatch, useAppSelector } from "../store/store";
 import { LoginData } from "../services/auth-service";
-import { login } from "../store/auth/authSlice";
+import { login, reset } from "../store/auth/authSlice";
 
 const validationSchema = Yup.object().shape({
   email: Yup.string()
@@ -18,7 +18,14 @@ const validationSchema = Yup.object().shape({
 
 export const Login = ({ navigation }: any) => {
   const dispatch = useAppDispatch();
-  const auth = useAppSelector((state: RootState) => state.auth);
+  const { user, isError, isSuccess, message } = useAppSelector(
+    (state: RootState) => state.auth
+  );
+
+  useEffect(() => {
+    dispatch(reset());
+  }, [user, isError, isSuccess, message, navigation, dispatch]);
+
   const handleRegister = () => {
     navigation.navigate("Register");
   };
@@ -30,9 +37,13 @@ export const Login = ({ navigation }: any) => {
           data.meta.requestStatus === "fulfilled" && navigation.navigate("Home")
       );
     } catch (error) {
-      console.log("registration error :", error);
+      console.log("login error :", error);
     }
   };
+
+  if (isError) {
+    alert(message);
+  }
 
   return (
     <View style={styles.container}>
@@ -40,17 +51,11 @@ export const Login = ({ navigation }: any) => {
       <Formik
         initialValues={{ name: "", email: "", password: "" }}
         validationSchema={validationSchema}
-        onSubmit={handleLogin}
+        onSubmit={(values, { resetForm }) => {
+          resetForm();
+        }}
       >
-        {({
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          values,
-          errors,
-          touched,
-          isValid,
-        }) => (
+        {({ handleChange, handleBlur, values, errors, touched, isValid }) => (
           <>
             <TextInput
               style={styles.input}

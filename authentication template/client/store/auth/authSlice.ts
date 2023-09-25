@@ -12,7 +12,7 @@ const user = localStorage.getItem("user")
   : null;
 
 const initialState: IAuthInitialState = {
-  user: user ? user : null,
+  user: user || null,
   isError: false,
   isSuccess: false,
   isLoading: false,
