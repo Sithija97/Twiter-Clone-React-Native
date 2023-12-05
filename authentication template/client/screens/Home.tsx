@@ -15,7 +15,9 @@ export const Home = ({ navigation }: any) => {
   };
 
   const fetchTasks = async () => {
-    await dispatch(getTasks()).then((data) => console.log(data.payload));
+    await dispatch(getTasks()).then((data) =>
+      console.log("tasks :", data.payload)
+    );
   };
 
   const AddTask = async () => {

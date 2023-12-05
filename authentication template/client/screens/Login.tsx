@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -11,9 +11,8 @@ const validationSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
     .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
+  password: Yup.string().min(6, "Password must be at least 6 characters"),
+  // .required("Password is required"),
 });
 
 export const Login = ({ navigation }: any) => {
@@ -49,13 +48,22 @@ export const Login = ({ navigation }: any) => {
     <View style={styles.container}>
       <Text style={styles.title}>Login</Text>
       <Formik
-        initialValues={{ name: "", email: "", password: "" }}
+        initialValues={{ email: "", password: "" }}
         validationSchema={validationSchema}
         onSubmit={(values, { resetForm }) => {
+          handleLogin(values);
           resetForm();
         }}
       >
-        {({ handleChange, handleBlur, values, errors, touched, isValid }) => (
+        {({
+          handleChange,
+          handleBlur,
+          values,
+          errors,
+          touched,
+          isValid,
+          resetForm,
+        }) => (
           <>
             <TextInput
               style={styles.input}
@@ -82,7 +90,10 @@ export const Login = ({ navigation }: any) => {
             <Button
               title="Login"
               disabled={!isValid}
-              onPress={() => handleLogin(values)}
+              onPress={() => {
+                handleLogin(values);
+                resetForm();
+              }}
             />
           </>
         )}

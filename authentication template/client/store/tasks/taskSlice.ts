@@ -69,7 +69,6 @@ export const goalSlice = createSlice({
       .addCase(createTask.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isSuccess = true;
-        console.log(action.payload.text);
         state.tasks.push(action.payload);
       })
       .addCase(createTask.rejected, (state, action) => {
