@@ -1,8 +1,8 @@
 import express from "express";
 import {
+  createComment,
+  deleteComment,
   getComments,
-  createComments,
-  deleteComments,
 } from "../controllers/comment.controller.js";
 import { protectRoute } from "../middleware/auth.middleware.js";
 
@@ -12,7 +12,7 @@ const router = express.Router();
 router.get("/posts/:postId", getComments);
 
 // protected routes
-router.post("/posts/:postId", protectRoute, createComments);
-router.delete("/:commentId", protectRoute, deleteComments);
+router.post("/posts/:postId", protectRoute, createComment);
+router.delete("/:commentId", protectRoute, deleteComment);
 
 export default router;
